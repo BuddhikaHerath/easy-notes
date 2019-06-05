@@ -118,6 +118,13 @@ public class CartController {
             Orders order = orders.get();
             order.setOrderStatus(status);
             orderRepository.save(order);
+
+            List<OrderProducts> orderProds = orders.get().getOrderProducts();
+            for(OrderProducts orderProd : orderProds){
+                Product prod = orderProd.getProduct();
+                prod.setQuantity(prod.getQuantity()-orderProd.getQuantity());
+                prodRepository.save(prod);
+            }
             return order;
         }
         return null;

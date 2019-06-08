@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class CartController {
 
     @Autowired
@@ -25,8 +26,8 @@ public class CartController {
     @Autowired
     OrderProductsRepository orderProductsRepository;
 
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+//    UserRepository userRepository;
 
     @Autowired
     ProductRepository prodRepository;

@@ -10,19 +10,23 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin("*")
 public class ProductController {
 
     @Autowired
     ProductRepository productRepository;
 
     @GetMapping("/products")
+
     public List<ProductDTO> getAllProducts(){
         List<ProductDTO> productDTOList = new ArrayList<>();
-        for(Product product : productRepository.findAll()){
+        List<Product> products = productRepository.findAll();
+        for(Product product : products){
             ProductDTO productDTO = productToDTO(product);
             productDTOList.add(productDTO);
         }
@@ -42,10 +46,19 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product createProduct(@Valid @RequestBody Product product){
+    public Product createProduct(@Valid @RequestBody ProductDTO productDTO){
+        Product product = new Product();
+        product.setTitle(productDTO.getTitle());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+        product.setPrice(productDTO.getPrice());
+        System.err.println(productDTO.getImagePath());
+        byte[] image = Base64.getDecoder().decode(productDTO.getImagePath());
+        System.err.println(image);
+        product.setImage(image);
+        product.setCompany(productDTO.getCompany());
 
         return productRepository.save(product);
-       // return product;
     }
 
     @GetMapping("/products/{id}")
@@ -58,13 +71,17 @@ public class ProductController {
 
     @PutMapping("/products/{id}")
     public Product updateProduct(@PathVariable(value = "id")Long productID,
-                                 @Valid @RequestBody Product productDetails){
+                                 @Valid @RequestBody ProductDTO productDetails){
         Product product = productRepository.findById(productID)
                 .orElseThrow(()-> new ResourceNotFoundException("Product", "id", productID));
 
+        product.setTitle(productDetails.getTitle());
         product.setDescription(productDetails.getDescription());
         product.setPrice(productDetails.getPrice());
         product.setQuantity(productDetails.getQuantity());
+        byte[] image = Base64.getDecoder().decode(productDetails.getImagePath());
+        product.setImage(image);
+        product.setCompany(productDetails.getCompany());
 
         Product updatedProduct = productRepository.save(product);
         return updatedProduct;

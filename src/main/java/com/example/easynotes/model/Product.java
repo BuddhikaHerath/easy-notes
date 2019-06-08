@@ -3,7 +3,7 @@ package com.example.easynotes.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+//import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
@@ -36,12 +36,13 @@ public class Product implements Serializable {
 
     @Setter @Getter private double price;
 
-    @Setter @Getter private String image;
+    @Lob
+    @Setter @Getter private byte[] image;
 
     @Setter @Getter private String company;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
     @Getter @Setter
     List<OrderProducts> orderProducts;
 }

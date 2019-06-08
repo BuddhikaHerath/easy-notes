@@ -14,16 +14,22 @@ public class OrderProducts {
     @Getter
     private long id;
 
-    @Setter @Getter private int quantity;
+    @Setter
+    @Getter
+    private int quantity;
 
     //@JsonIgnore
     @ManyToOne
-    @JoinColumn(name="order_id",referencedColumnName = "id")
-    @Getter @Setter Orders orders;
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @Getter
+    @Setter
+    Orders orders;
 
     //@JsonIgnore
-    @ManyToOne
-    @JoinColumn(name="product_id",referencedColumnName = "id")
-    @Getter @Setter Product product;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @Getter
+    @Setter
+    Product product;
 
 }

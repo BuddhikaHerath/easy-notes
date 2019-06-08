@@ -4,6 +4,7 @@ import com.example.easynotes.dto.OrderProductDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Lob;
 import java.util.List;
 
 public class ProductDTO {
@@ -17,7 +18,10 @@ public class ProductDTO {
 
     @Setter @Getter private double price;
 
-    @Setter @Getter private String image;
+    @Lob
+    @Setter @Getter private byte[] image;
+
+    @Setter @Getter private String imagePath;
 
     @Setter @Getter private String company;
 

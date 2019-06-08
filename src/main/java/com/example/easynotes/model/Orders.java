@@ -17,9 +17,11 @@ public class Orders {
 
     @Setter @Getter private String orderStatus;
 
-    @Setter @Getter private long userId;
+    @ManyToOne
+    @JoinColumn(name="user_id",referencedColumnName = "id")
+    @Setter @Getter private User user;
 
-    @JsonIgnore
+    //@JsonIgnore
     @OneToMany(mappedBy = "orders",fetch = FetchType.EAGER)
     @Getter @Setter
     List<OrderProducts> orderProducts;

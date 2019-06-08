@@ -27,6 +27,9 @@ public class CartController {
     @Autowired
     OrderProductsRepository orderProductsRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
 //    @Autowired
 //    UserRepository userRepository;
 
@@ -35,17 +38,17 @@ public class CartController {
 
     @PreAuthorize("hasAnyRole('CONSUMER')")
     @PostMapping("/cart")
-    public OrderProducts createCart(@Valid @RequestBody OrderProducts newOrderProd){
-        long userId = 2;
-        Orders order = orderRepository.findByUserIdAndOrderStatus(2, "cart");
+    public OrderProducts createCart(@Valid @RequestBody Orders newOrder){
+        Optional<User> userDetails = userRepository.findByUsername(newOrder.getUser().getUsername());
+        Orders order = orderRepository.findByUserIdAndOrderStatus(userDetails.get().getId(), "cart");
 
         if(order==null){
             order = new Orders();
             order.setOrderStatus("cart");
-            order.setUserId(userId);
+            order.setUser(userDetails.get());
             order = orderRepository.save(order);
         }
-
+        OrderProducts newOrderProd = newOrder.getOrderProducts().get(0);
         Product product = prodRepository.findById(newOrderProd.getProduct().getId()).get();
         List<OrderProducts> orderProdList = orderProductsRepository.findByOrdersAndProduct(order,product);
 
@@ -62,10 +65,13 @@ public class CartController {
     }
 
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    @GetMapping("/cart")
-    public List<OrderProductDTO> getCart() {
-        long userId = 2;
-        Orders order = orderRepository.findByUserIdAndOrderStatus(2, "cart");
+    @PostMapping("/getcart")
+    public List<OrderProductDTO> getCart(@RequestBody User user) {
+//        System.err.println(user.getUsername());
+//        System.err.println(user.getName());
+        //long userId = 2;
+        Optional<User> userDetails = userRepository.findByUsername(user.getUsername());
+        Orders order = orderRepository.findByUserIdAndOrderStatus(userDetails.get().getId(), "cart");
         //OrdersDTO orderDTO = ordersToDTO(order);
         List<OrderProductDTO> orderProdDTOList = new ArrayList<>();
         if(order!=null){
@@ -117,7 +123,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    @PutMapping("/cart/{id}/{status}")
+    @GetMapping("/cart/{id}/{status}")
     public Orders updateCartStatus(@PathVariable(value = "id")Long cartID, @PathVariable(value = "status")String status){
         Optional<Orders> orders = orderRepository.findById(cartID);
         if(orders.isPresent()){

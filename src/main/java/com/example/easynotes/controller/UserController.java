@@ -1,26 +1,29 @@
 package com.example.easynotes.controller;
 
-import com.example.easynotes.exception.ResourceNotFoundException;
+import com.example.easynotes.Services.CustomUserDetailsService;
 import com.example.easynotes.model.User;
-import com.example.easynotes.model.Users;
 import com.example.easynotes.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
+@CrossOrigin("*")
 @RestController
 public class UserController {
 
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CustomUserDetailsService customerUserDetailsService;
 //    @Autowired
 //    UsersRepository usersRepository;
 
@@ -41,18 +44,23 @@ public class UserController {
     }
 //}
 
-
+    @PreAuthorize("hasAnyRole('CONSUMER') or hasAnyRole('ADMIN') ")
     @GetMapping("/user/name")
-    public List<User> securedHello(@RequestBody Map<String, String> body){
-        String Email = body.get("email");
-        String Password = body.get("password");
+    public List<User> securedHello(User user){
+        String Email = user.getEmail();
+        String Password =user.getPassword();
 
         List<User>lol=userRepository.findByEmailAndPassword(Email,Password);
+
         return lol ;
     }
 
-    @GetMapping("/secured/alternate")
-    public String alternate(){
-        return "alternate";
+    @GetMapping("/secured/logout")
+    public UserDetails alternate(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth!=null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return customerUserDetailsService.loadUserByUsername("123");
     }
 }

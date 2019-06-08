@@ -8,6 +8,7 @@ import com.example.easynotes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ public class CartController {
     @Autowired
     ProductRepository prodRepository;
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @PostMapping("/cart")
     public OrderProducts createCart(@Valid @RequestBody OrderProducts newOrderProd){
         long userId = 2;
@@ -59,6 +61,7 @@ public class CartController {
         return orderProd;
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @GetMapping("/cart")
     public List<OrderProductDTO> getCart() {
         long userId = 2;
@@ -85,6 +88,7 @@ public class CartController {
         return orderProdDTOList;
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @PutMapping("/cart/{id}")
     public ResponseEntity<Object> updateCart(@PathVariable(value = "id")Long cartID,
                                              @Valid @RequestBody OrderProducts newOrderProduct){
@@ -112,6 +116,7 @@ public class CartController {
 //        return null;
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @PutMapping("/cart/{id}/{status}")
     public Orders updateCartStatus(@PathVariable(value = "id")Long cartID, @PathVariable(value = "status")String status){
         Optional<Orders> orders = orderRepository.findById(cartID);
@@ -131,6 +136,7 @@ public class CartController {
         return null;
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @DeleteMapping("/cart/{cartId}/{productId}")
     public boolean deleteCartProduct(@PathVariable Long cartId
     ,@PathVariable Long productId) {
@@ -146,6 +152,7 @@ public class CartController {
         return false;
     }
 
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @DeleteMapping("/cart/{id}")
     public boolean deleteCart(@PathVariable(value = "id") Long cartID) {
         Optional<Orders> order = orderRepository.findById(cartID);

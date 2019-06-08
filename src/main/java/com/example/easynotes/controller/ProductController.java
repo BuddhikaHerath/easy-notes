@@ -6,6 +6,7 @@ import com.example.easynotes.model.*;
 import com.example.easynotes.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,7 +23,6 @@ public class ProductController {
     ProductRepository productRepository;
 
     @GetMapping("/products")
-
     public List<ProductDTO> getAllProducts(){
         List<ProductDTO> productDTOList = new ArrayList<>();
         List<Product> products = productRepository.findAll();
@@ -45,6 +45,7 @@ public class ProductController {
         return productDTO;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/products")
     public Product createProduct(@Valid @RequestBody ProductDTO productDTO){
         Product product = new Product();
@@ -62,13 +63,14 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ProductDTO getNoteById(@PathVariable(value = "id") Long productID) {
+    public ProductDTO getProductById(@PathVariable(value = "id") Long productID) {
 //        return productRepository.findById(productID)
     //            .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
 
         return productToDTO(productRepository.findById(productID).get());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/products/{id}")
     public Product updateProduct(@PathVariable(value = "id")Long productID,
                                  @Valid @RequestBody ProductDTO productDetails){
@@ -86,8 +88,9 @@ public class ProductController {
         Product updatedProduct = productRepository.save(product);
         return updatedProduct;
     }
-    
 
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/products/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productID) {
         Product note = productRepository.findById(productID)

@@ -2,9 +2,7 @@ package com.example.easynotes.Services;
 
 import com.example.easynotes.model.CustomUserDetails;
 import com.example.easynotes.model.User;
-import com.example.easynotes.model.Users;
 import com.example.easynotes.repository.UserRepository;
-import com.example.easynotes.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

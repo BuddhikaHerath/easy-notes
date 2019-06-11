@@ -137,6 +137,7 @@ public class CartController {
                 prod.setQuantity(prod.getQuantity()-orderProd.getQuantity());
                 prodRepository.save(prod);
             }
+            order.setOrderProducts(null);
             return order;
         }
         return null;

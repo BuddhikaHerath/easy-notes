@@ -45,9 +45,20 @@ public class UserController {
     }
 //}
 
-    @PreAuthorize("hasAnyRole('CONSUMER') or hasAnyRole('ADMIN') ")
+    @PreAuthorize("hasAnyRole('CONSUMER')")
     @PostMapping("/user/name")
     public List<User> securedHello(@RequestBody User user){
+        String Username = user.getUsername();
+        String Password =user.getPassword();
+
+        List<User>lol=userRepository.findByUsernameAndPassword(Username,Password);
+
+        return lol ;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN') ")
+    @PostMapping("/user/admin")
+    public List<User> securedAdmin(@RequestBody User user){
         String Username = user.getUsername();
         String Password =user.getPassword();
 

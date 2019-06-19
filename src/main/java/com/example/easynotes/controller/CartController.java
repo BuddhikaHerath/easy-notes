@@ -37,7 +37,7 @@ public class CartController {
     ProductRepository prodRepository;
 
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    @PostMapping("/cart")
+    @PostMapping("/cart")//posting to cart
     public OrderProducts createCart(@Valid @RequestBody Orders newOrder){
         Optional<User> userDetails = userRepository.findByUsername(newOrder.getUser().getUsername());
         Orders order = orderRepository.findByUserIdAndOrderStatus(userDetails.get().getId(), "cart");

@@ -25,7 +25,7 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
-    @GetMapping("/products")
+    @GetMapping("/products")//view products
     public List<ProductDTO> getAllProducts(){
         List<ProductDTO> productDTOList = new ArrayList<>();
         List<Product> products = productRepository.findAll();
@@ -49,7 +49,7 @@ public class ProductController {
     }
 
 //    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/products")
+    @PostMapping("/products")//add products
     public Product createProduct(@Valid @RequestBody ProductDTO productDTO){
         Product product = new Product();
         product.setTitle(productDTO.getTitle());
@@ -62,10 +62,10 @@ public class ProductController {
         product.setImage(image);
         product.setCompany(productDTO.getCompany());
 
-        return productRepository.save(product);
+        return productRepository.save(product);//saving to the DB
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/products/{id}")//specific product with the id
     public ProductDTO getProductById(@PathVariable(value = "id") Long productID) {
 //        return productRepository.findById(productID)
     //            .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
@@ -74,7 +74,7 @@ public class ProductController {
     }
 
 //    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PutMapping("/products/{id}")
+    @PutMapping("/products/{id}")//edit product
     public Product updateProduct(@PathVariable(value = "id")Long productID,
                                  @Valid @RequestBody ProductDTO productDetails){
         Product product = productRepository.findById(productID)
@@ -88,13 +88,13 @@ public class ProductController {
         product.setImage(image);
         product.setCompany(productDetails.getCompany());
 
-        Product updatedProduct = productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);//saving to the database.
         return updatedProduct;
     }
 
 
 //    @PreAuthorize("hasAnyRole('ADMIN')")
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/products/{id}")//deleting the product
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productID) {
         Product note = productRepository.findById(productID)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productID));
@@ -105,10 +105,10 @@ public class ProductController {
     }
 
     @PreAuthorize("hasAnyRole('CONSUMER')")
-    @GetMapping("/products/qtyavailable/{id}/{qty}")
-    public ResponseEntity<Object> getQty(@PathVariable long id,@PathVariable int qty){
-        Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()){
+        @GetMapping("/products/qtyavailable/{id}/{qty}")
+        public ResponseEntity<Object> getQty(@PathVariable long id,@PathVariable int qty){
+            Optional<Product> product = productRepository.findById(id);
+            if(product.isPresent()){
             if(qty<=product.get().getQuantity() && qty>0){
                 return new ResponseEntity<Object>(product.get(), HttpStatus.OK);
             }

@@ -48,7 +48,7 @@ public class ProductController {
         return productDTO;
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/products")//add products
     public Product createProduct(@Valid @RequestBody ProductDTO productDTO){
         Product product = new Product();
@@ -73,7 +73,7 @@ public class ProductController {
         return productToDTO(productRepository.findById(productID).get());
     }
 
-//    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/products/{id}")//edit product
     public Product updateProduct(@PathVariable(value = "id")Long productID,
                                  @Valid @RequestBody ProductDTO productDetails){
@@ -93,7 +93,7 @@ public class ProductController {
     }
 
 
-//    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/products/{id}")//deleting the product
     public ResponseEntity<?> deleteProduct(@PathVariable(value = "id") Long productID) {
         Product note = productRepository.findById(productID)
